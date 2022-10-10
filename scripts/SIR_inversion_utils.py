@@ -10,9 +10,21 @@ import os
 import sys
 
 # TODO:
-#  Add output filename to hinode_assemble:
-def hinode_assemble(output_name, input_filepath='.', input_format='S*.fits', output_filepath='.'):
+#  Add output filename & filepath to hinode_assemble:
+def hinode_assemble(output_name, input_filepath='.', output_filepath='.'):
+
+    """
+        Hinode Assemble: given a filepath and a filename, unzip the file, assemble the data (via calling hinode_assemble),
+                         and finally, delete the folder and scans.
+
+                Inputs: 1. output_name: the name of the saved fits file
+                        2. input_filepath: the filepath to the fits slit scans. default = '.'
+                        3. output_filepath: where to put saved fits file. default = '.'
+                Outputs: saves an assembled fits file, normalized and in SIR format.
+        """
+
     filenames = []
+    input_format = 'S*.fits'
 
     for file in sorted(os.listdir(input_filepath)):
         if file.endswith(input_format):
@@ -46,15 +58,16 @@ import zipfile
 
 def unzip(zip_name, assembled_filepath='./assembed_fits/', remove_zips=False, path_to_zip='.'):
 
-    """ Unzip: given a filepath and a filename, unzip the file, assemble the data (via calling hinode_assemble),
-               and finally, delete the folder and scans.
+    """
+    Unzip: given a filepath and a filename, unzip the file, assemble the data (via calling hinode_assemble),
+            and finally, delete the folder and scans.
 
-               Inputs: 1. assembled_filepath: filepath to send assembled to
-                       2. remove_zips: whether to remove zips, default is False
-                       4. directory_to_extract_to: directory to which extract slits. this needs to be removed later....
-                       6. zip_name
-                       7. path_to_zip
-               Outputs: saves a fits file via assemble to assembled_filepath
+            Inputs: 1. assembled_filepath: filepath to send assembled to
+                    2. remove_zips: whether to remove zips, default is False
+                    3. directory_to_extract_to: directory to which extract slits. this needs to be removed later....
+                    4. zip_name
+                    5. path_to_zip
+            Outputs: saves a fits file via assemble to assembled_filepath
     """
 
     with zipfile.ZipFile(path_to_zip + zip_name, 'r') as zip_ref:
