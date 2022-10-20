@@ -7,6 +7,7 @@
 import numpy as np
 import astropy.io.fits as fits
 import os
+import re
 import sys
 
 # TODO:
@@ -73,39 +74,77 @@ def unzip(zip_name, assembled_filepath='./assembed_fits/', remove_zips=False, pa
     with zipfile.ZipFile(path_to_zip + zip_name, 'r') as zip_ref:
         temp_slit_folder_name = path_to_zip + 'temp'
         # create a temporary folder to put fits slits into:
-        os.mkdir(temp_slit_folder_name)
-        zip_ref.extractall(temp_slit_folder_name)
+        try:
+            os.mkdir(temp_slit_folder_name)
+            zip_ref.extractall(temp_slit_folder_name)
+        except:
+            print('temp folder already exists.')
 
     try:
         os.mkdir(assembled_filepath)
     except:
         print('Assembled Fits Folder Already Exits.')
-    hinode_assemble(output_name=zip_name + '.fits',
+
+    # find the filepath to the .fits slits
+    all_sp3d_dirs, all_data_dirs = get_data_path(path_to_zip + '/' + temp_slit_folder_name)
+    print(all_sp3d_dirs, all_sp3d_dirs)
+
+    for data_dir_i in len(range(all_data_dirs)):
+        data_dir = all_data_dirs[data_dir_i]
+
+    hinode_assemble(output_name=str(data_dir) + '.fits',
                     input_filepath=temp_slit_folder_name,
                     output_filepath=assembled_filepath)
     # remove the slits:
     os.remove(temp_slit_folder_name)
 
-    # remove the zips:
+    # remove the zips if remove_zips is true :
     if remove_zips:
         os.remove(path_to_zip + zip_name)
 
+def get_data_path(path_to_unzipped_directories):
+    """
+    Get Data Path:
 
-def assemble_many(filepath_to_zips):
-    """ Assemble Many: given a folder containing many zip files,
-                       unzip and assemble them all.
+    - parameters:
+        1. path_to_unzipped_directories:
+    -returns:
+        1. list of all sp3d directories
+        2. list of all data (fits) directories
+    """
+    all_sp3d_dirs = [''] # all directories
+    all_data_dirs = ['']
+    # insert the appropriate path, relative or absolute, to where the data are stored
+    for root, dirs, files in os.walk(path_to_unzipped_directories):
+        print(root, dirs, files)
+        if root.endswith("SP3D"):
+            all_sp3d_dirs += [root]
+            for subdir in dirs:
+                # this is the regular expression to find directories
+                #     of the type [YYYYMMDDHHMMSS]
+                if bool(re.search('20[012][0-9]+[012]+',subdir)):
+                    all_data_dirs += [os.path.join(root, subdir)]
+    # trim off the first null record in each list
+    all_sp3d_dirs = all_sp3d_dirs[1:]
+    all_data_dirs = all_data_dirs[1:]
+    print("SP3D Directories\n", "\n".join(all_sp3d_dirs))
+    print("Data Directories\n", "\n".join(all_data_dirs))
 
-                       Inputs: 1. filepath_to_zips
-                               2. fits_slits_path
+    return all_sp3d_dirs, all_data_dirs
+
+
+def assemble_many(filepath_to_zips, assembled_fits_path):
+    """ Assemble Many: CSAC zips contain many datasets in a single fits file,
+                       so this function should unzip one zip and assemble all contained datasets,
+                       naming them appropriately and deleting the fits slits.
+
+                       Inputs: 1. filepath_to_zip
                                3. assembled_fits_path
     """
-
-
     zips = []
-
     for file in sorted(os.listdir(filepath_to_zips)):
         if file.endswith(".zip"):
-            print(file)
+            print('Zipped File: ' + str(file))
             zips.append(file)
     print(len(zips))
 
@@ -113,3 +152,5 @@ def assemble_many(filepath_to_zips):
         # for zip names, I want to call zip for each, which should
         # and then assemble slits into a DIFFERENT directory each file
         unzip(zip_name=zip, path_to_zip=filepath_to_zips)
+
+
