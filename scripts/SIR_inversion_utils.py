@@ -8,7 +8,6 @@ import numpy as np
 import astropy.io.fits as fits
 import os
 import re
-import sys
 
 # TODO:
 #  Add output filename & filepath to hinode_assemble:
@@ -49,10 +48,9 @@ def hinode_assemble(output_name, input_filepath='.', output_filepath='.'):
     stokes = stokes.transpose(2, 0, 1, 3)
     print(stokes.shape)
 
-    output = sys.argv[1]
     hdu = fits.PrimaryHDU(stokes)
     hdu.header = fits.open(name)[0].header
-    hdu.writeto(output, overwrite=True)
+    hdu.writeto(output_filepath + output_name, overwrite=True)
 
 
 import zipfile
@@ -72,24 +70,27 @@ def unzip(zip_name, assembled_filepath='./assembed_fits/', remove_zips=False, pa
     """
 
     with zipfile.ZipFile(path_to_zip + zip_name, 'r') as zip_ref:
-        temp_slit_folder_name = path_to_zip + 'temp'
+        temp_slit_folder_name = 'temp'
         # create a temporary folder to put fits slits into:
         try:
             os.mkdir(temp_slit_folder_name)
             zip_ref.extractall(temp_slit_folder_name)
         except:
-            print('temp folder already exists.')
+            print('Temp folder already exists.')
 
     try:
         os.mkdir(assembled_filepath)
     except:
         print('Assembled Fits Folder Already Exits.')
 
-    # find the filepath to the .fits slits
-    all_sp3d_dirs, all_data_dirs = get_data_path(path_to_zip + '/' + temp_slit_folder_name)
-    print(all_sp3d_dirs, all_sp3d_dirs)
+    print('TEST')
+    print(path_to_zip + temp_slit_folder_name)
+    print('TEST')
 
-    for data_dir_i in len(range(all_data_dirs)):
+    # find the filepath to the .fits slits
+    all_sp3d_dirs, all_data_dirs = get_data_path(path_to_zip + temp_slit_folder_name)
+
+    for data_dir_i in range(len(all_data_dirs)):
         data_dir = all_data_dirs[data_dir_i]
 
     hinode_assemble(output_name=str(data_dir) + '.fits',
@@ -116,7 +117,7 @@ def get_data_path(path_to_unzipped_directories):
     all_data_dirs = ['']
     # insert the appropriate path, relative or absolute, to where the data are stored
     for root, dirs, files in os.walk(path_to_unzipped_directories):
-        print(root, dirs, files)
+        #print(root, dirs, files)
         if root.endswith("SP3D"):
             all_sp3d_dirs += [root]
             for subdir in dirs:
@@ -127,8 +128,10 @@ def get_data_path(path_to_unzipped_directories):
     # trim off the first null record in each list
     all_sp3d_dirs = all_sp3d_dirs[1:]
     all_data_dirs = all_data_dirs[1:]
-    print("SP3D Directories\n", "\n".join(all_sp3d_dirs))
-    print("Data Directories\n", "\n".join(all_data_dirs))
+    #print("SP3D Directories\n", "\n".join(all_sp3d_dirs))
+    #print("Data Directories\n", "\n".join(all_data_dirs))
+    print('Data Directories:')
+    print(all_data_dirs)
 
     return all_sp3d_dirs, all_data_dirs
 
