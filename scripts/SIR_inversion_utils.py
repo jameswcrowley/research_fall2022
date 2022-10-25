@@ -28,7 +28,6 @@ def hinode_assemble(output_name, input_filepath='.', output_filepath='.'):
 
     filenames = []
     input_format = '.fits'
-    print(input_filepath)
 
     for file in sorted(os.listdir(input_filepath)):
         if file.endswith(input_format):
@@ -51,8 +50,9 @@ def hinode_assemble(output_name, input_filepath='.', output_filepath='.'):
 
     hdu = fits.PrimaryHDU(stokes)
     hdu.header = fits.open(input_filepath + name)[0].header
-    hdu.writeto(output_filepath + '/' + output_name, overwrite=True)
-    print('Saved fits successfully at : ' + output_filepath + '/' + output_name)
+    hdu.writeto(output_filepath + output_name, overwrite=True)
+    print('Saved fits successfully at : ' + output_filepath + output_name)
+    print('-------------------------------')
 
 
 def unzip(zip_name, assembled_filepath='../assembled_fits/', remove_zips=False, path_to_zip='../'):
@@ -69,14 +69,14 @@ def unzip(zip_name, assembled_filepath='../assembled_fits/', remove_zips=False, 
             Outputs: saves a fits file via assemble to assembled_filepath
     """
 
-    with zipfile.ZipFile('../6349ab2404c0e.zip', 'r') as zip_ref:
+    with zipfile.ZipFile(path_to_zip + zip_name, 'r') as zip_ref:
         temp_slit_folder_name = 'temp'
         # create a temporary folder to put fits slits into:
         try:
             os.mkdir(path_to_zip + temp_slit_folder_name)
-            zip_ref.extractall('../temp/')
         except:
             print('Temp folder already exists.')
+        zip_ref.extractall(path_to_zip + temp_slit_folder_name)
 
     try:
         os.mkdir(assembled_filepath)
@@ -84,7 +84,6 @@ def unzip(zip_name, assembled_filepath='../assembled_fits/', remove_zips=False, 
         print('Assembled Fits Folder Already Exits.')
 
     # find the filepath to the .fits slits
-    print(path_to_zip + temp_slit_folder_name)
     all_sp3d_dirs, all_data_dirs = get_data_path(path_to_zip + temp_slit_folder_name)
 
     for data_dir_i in range(len(all_data_dirs)):
@@ -96,7 +95,7 @@ def unzip(zip_name, assembled_filepath='../assembled_fits/', remove_zips=False, 
                         output_filepath=assembled_filepath)
     #remove the slits:
     try:
-        shutil.rmtree(temp_slit_folder_name)
+        shutil.rmtree(path_to_zip + temp_slit_folder_name)
     except OSError as e:
         print("Error: %s - %s." % (e.filename, e.strerror))
 
@@ -134,8 +133,6 @@ def get_data_path(path_to_unzipped_directories):
     all_data_dirs = all_data_dirs[1:]
     #print("SP3D Directories\n", "\n".join(all_sp3d_dirs))
     #print("Data Directories\n", "\n".join(all_data_dirs))
-    print('Data Directories:')
-    print(all_data_dirs)
 
     return all_sp3d_dirs, all_data_dirs
 
