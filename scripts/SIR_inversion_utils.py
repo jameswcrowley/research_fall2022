@@ -103,6 +103,7 @@ def unzip(zip_name, assembled_filepath='../assembled_fits/', remove_zips=False, 
     if remove_zips:
         try:
             shutil.rmtree(path_to_zip + zip_name)
+            print('Successfully removed slit scan folder: ' + str(path_to_zip) + 'temp')
         except OSError as e:
             print("Error: %s - %s." % (e.filename, e.strerror))
 
