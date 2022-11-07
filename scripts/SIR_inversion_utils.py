@@ -130,7 +130,7 @@ def get_data_path(path_to_unzipped_directories):
     return all_sp3d_dirs, all_data_dirs
 
 
-def normalize(input_dataname, output_datapath, output_dataname, remove_original=True):
+def normalize(input_dataname, output_datapath, remove_original=True):
     """
     normalize: normalizes data already in the right SIR shape
     _____________
@@ -155,7 +155,7 @@ def normalize(input_dataname, output_datapath, output_dataname, remove_original=
 
     hdu = fits.PrimaryHDU(normalized_data)
     hdu.header = fits.open(input_dataname)[0].header
-    hdu.writeto(output_datapath, output_dataname, overwrite=True)
+    hdu.writeto(output_datapath, 'normalized_' + input_dataname, overwrite=True)
 
     if remove_original:
         os.remove(input_dataname)
@@ -190,5 +190,5 @@ def quickcheck(input_filepath):
         elif np.np.min(temp_data[:, :, 0, 10]) < 0:
             print(data_list[i] + ' is corrupted.')
 
-    print(good_data)
+    return good_data
 
