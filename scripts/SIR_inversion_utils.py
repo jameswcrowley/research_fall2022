@@ -104,8 +104,7 @@ def unzip(zip_name, assembled_filepath='../assembled_fits/', remove_zips=False, 
 
         hinode_assemble(output_name=name + '.fits',
                         input_filepath=data_dir + '/',
-                        output_filepath=assembled_filepath,
-                        normalize=False)
+                        output_filepath=assembled_filepath)
     # remove the slits:
     try:
         shutil.rmtree(path_to_zip + temp_slit_folder_name)
@@ -154,6 +153,9 @@ def get_data_path(path_to_unzipped_directories):
 
 def normalize(input_dataname, output_datapath, remove_original=True):
     """
+
+    NO LONGER FUNCTIONAL: INCLUDED IN HINODE_ASSEMBLE.
+
     normalize: normalizes data already in the right SIR shape
     _____________
     Parameters:
@@ -184,6 +186,9 @@ def normalize(input_dataname, output_datapath, remove_original=True):
 
 
 def quicklook(input_filepath):
+    """
+    Makes a simple plot of stokes I of all the assembled fits files, to make sure they look ok/not corrupted.
+    """
     data_list = glob.glob(input_filepath + 'a.*.fits')
     N = len(data_list)
 
