@@ -183,27 +183,10 @@ def quicklook(input_filepath):
     for i in range(N):
         temp_data = fits.open(input_filepath + data_list[i])[0].data
 
-        plt.subplots(1, N, i + 1)
+        plt.figure(figsize = [8, 8*N])
+        plt.subplot(1, N, i + 1)
         plt.imshow(temp_data[:, :, 0, 10], cmap='magma');
         plt.colorbar()
         plt.title(data_list[i])
 
     plt.savefig(input_filepath + 'quicklook.png')
-
-
-def quickcheck(input_filepath):
-    data_list = glob.glob(input_filepath + 'a.*.fits')
-    N = len(data_list)
-
-    good_data = []
-
-    for i in range(N):
-        temp_data = fits.open(input_filepath + data_list[i])[0].data
-
-        if np.min(temp_data[:, :, 0, 10]) > 0:
-            good_data.append(data_list[i])
-
-        elif np.min(temp_data[:, :, 0, 10]) < 0:
-            print(data_list[i] + ' is corrupted.')
-
-    return good_data
