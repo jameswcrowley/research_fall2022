@@ -5,9 +5,10 @@ import re
 import zipfile
 import shutil
 import matplotlib.pyplot as plt
+import glob
 
 
-def hinode_assemble(output_name, input_filepath='.', output_filepath='.'):
+def hinode_assemble(output_name, input_filepath='.', output_filepath='.', correct=True, normalize=True):
     """
         Hinode Assemble: given a filepath and a filename, unzip the file, assemble the data (via calling hinode_assemble),
                          and finally, delete the folder and scans.
@@ -15,7 +16,7 @@ def hinode_assemble(output_name, input_filepath='.', output_filepath='.'):
                 Inputs: 1. output_name: the name of the saved fits file
                         2. input_filepath: the filepath to the fits slit scans. default = '.'
                         3. output_filepath: where to put saved fits file. default = '.'
-                Outputs: saves an assembled fits file, normalized and in SIR format.
+                Outputs: saves an assembled fits file: corrected, normalized, and in SIR format.
         """
 
     filenames = []
@@ -38,11 +39,25 @@ def hinode_assemble(output_name, input_filepath='.', output_filepath='.'):
         stokes = np.concatenate((stokes, stokes_temp), axis=0)
 
     stokes = stokes.transpose(2, 0, 1, 3)
-    # print(stokes.shape)
+    # correct:
+    if correct:
+        for i in range(stokes.shape[0]):
+            for j in range(stokes.shape[1]):
+                for l in range(stokes.shape[3]):
+                    # stokes I should never be negative, if it is, we need to correct spillover counts:
+                    if stokes[i, j, 0, l] < 0:
+                        stokes[i, j, 0, l] += 65536
+                    else:
+                        pass  # else leave stokes alone.
+
+    # normalize:
+    if normalize:
+        continuum = np.mean(stokes[:, :, 0, :10])
+        stokes = np.true_divide(stokes, continuum)
 
     hdu = fits.PrimaryHDU(stokes)
     hdu.header = fits.open(input_filepath + name)[0].header
-    hdu.writeto(output_filepath + output_name, overwrite=True)
+    hdu.writeto(output_filepath + 'a.' + output_name, overwrite=True)
     print('Saved fits successfully at : ' + output_filepath + output_name)
     print('-------------------------------')
 
@@ -162,21 +177,22 @@ def normalize(input_dataname, output_datapath, remove_original=True):
 
 
 def quicklook(input_filepath):
-    data_list = os.listdir(input_filepath + '*.fits')
+    data_list = glob.glob(input_filepath + 'a.*.fits')
     N = len(data_list)
 
     for i in range(N):
         temp_data = fits.open(input_filepath + data_list[i])[0].data
 
-        plt.subplots(1, N, i+1)
-        plt.imshow(temp_data[:, :, 0, 10], cmap = 'magma'); plt.colorbar()
+        plt.subplots(1, N, i + 1)
+        plt.imshow(temp_data[:, :, 0, 10], cmap='magma');
+        plt.colorbar()
         plt.title(data_list[i])
 
     plt.savefig(input_filepath + 'quicklook.png')
 
 
 def quickcheck(input_filepath):
-    data_list = os.listdir(input_filepath + '*.fits')
+    data_list = glob.glob(input_filepath + 'a.*.fits')
     N = len(data_list)
 
     good_data = []
@@ -187,8 +203,7 @@ def quickcheck(input_filepath):
         if np.min(temp_data[:, :, 0, 10]) > 0:
             good_data.append(data_list[i])
 
-        elif np.np.min(temp_data[:, :, 0, 10]) < 0:
+        elif np.min(temp_data[:, :, 0, 10]) < 0:
             print(data_list[i] + ' is corrupted.')
 
     return good_data
-

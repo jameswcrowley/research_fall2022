@@ -33,9 +33,9 @@ def main():
     assembled_filepath = arg.assembled_filepath
 
     u.unzip(zip_name, assembled_filepath, zip_filepath)
-    print('Assembled correctly.')
+    print('Assembled and normalized correctly.')
 
-    good_data = u.quickcheck(assembled_filepath)
-    for data in good_data:
-        u.normalize(assembled_filepath + data, assembled_filepath)
-    print('Normalized correctly.')
+    u.quicklook(assembled_filepath)
+
+if __name__ == '__main__':
+    main()
