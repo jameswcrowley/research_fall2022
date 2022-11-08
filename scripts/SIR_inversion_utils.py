@@ -22,6 +22,9 @@ def hinode_assemble(output_name, input_filepath='.', output_filepath='.', correc
     filenames = []
     input_format = '.fits'
 
+    correct_mod = ''
+    normalize_mod = ''
+
     for file in sorted(os.listdir(input_filepath)):
         if file.endswith(input_format):
             filenames.append(file)
@@ -41,23 +44,26 @@ def hinode_assemble(output_name, input_filepath='.', output_filepath='.', correc
     stokes = stokes.transpose(2, 0, 1, 3)
     # correct:
     if correct:
+        correct_mod = 'c.'
+        stokes_new = np.zeros(stokes.shape)
         for i in range(stokes.shape[0]):
             for j in range(stokes.shape[1]):
                 for l in range(stokes.shape[3]):
                     # stokes I should never be negative, if it is, we need to correct spillover counts:
                     if stokes[i, j, 0, l] < 0:
-                        stokes[i, j, 0, l] += 65536
+                        stokes_new[i, j, 0, l] = stokes[i, j, 0, l] + 65536
                     else:
-                        pass  # else leave stokes alone.
-
+                        stokes_new[i, j, 0, l] = stokes[i, j, 0, l]
+        stokes = stokes_new
     # normalize:
     if normalize:
+        normalize_mod = 'n.'
         continuum = np.mean(stokes[:, :, 0, :10])
         stokes = np.true_divide(stokes, continuum)
 
     hdu = fits.PrimaryHDU(stokes)
     hdu.header = fits.open(input_filepath + name)[0].header
-    hdu.writeto(output_filepath + 'a.' + output_name, overwrite=True)
+    hdu.writeto(output_filepath + 'a.' + correct_mod + normalize_mod + output_name, overwrite=True)
     print('Saved fits successfully at : ' + output_filepath + output_name)
     print('-------------------------------')
 
@@ -98,7 +104,8 @@ def unzip(zip_name, assembled_filepath='../assembled_fits/', remove_zips=False, 
 
         hinode_assemble(output_name=name + '.fits',
                         input_filepath=data_dir + '/',
-                        output_filepath=assembled_filepath)
+                        output_filepath=assembled_filepath,
+                        normalize=False)
     # remove the slits:
     try:
         shutil.rmtree(path_to_zip + temp_slit_folder_name)
@@ -180,13 +187,12 @@ def quicklook(input_filepath):
     data_list = glob.glob(input_filepath + 'a.*.fits')
     N = len(data_list)
 
+    plt.figure(figsize=[5*N, 3])
+
     for i in range(N):
         temp_data = fits.open(input_filepath + data_list[i])[0].data
-
-        plt.figure(figsize = [8, 8*N])
         plt.subplot(1, N, i + 1)
         plt.imshow(temp_data[:, :, 0, 10], cmap='magma');
         plt.colorbar()
         plt.title(data_list[i])
-
     plt.savefig(input_filepath + 'quicklook.png')
