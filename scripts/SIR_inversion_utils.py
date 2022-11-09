@@ -10,12 +10,14 @@ import glob
 
 def hinode_assemble(output_name, input_filepath='.', output_filepath='.', correct=True, normalize=True):
     """
-        Hinode Assemble: given a filepath and a filename, unzip the file, assemble the data (via calling hinode_assemble),
-                         and finally, delete the folder and scans.
-
+        Hinode Assemble: Finds all fits scans in a specified folder, assembles, corrects, and normalizes.
+                _____________
                 Inputs: 1. output_name: the name of the saved fits file
                         2. input_filepath: the filepath to the fits slit scans. default = '.'
                         3. output_filepath: where to put saved fits file. default = '.'
+                        4. correct: boolean, do you want to correct for "overspill" of counts in some Hinode datasets?
+                        5. normalize: boolean, divide all stokes vectors by the mean of the stokes I continuum
+                _____________
                 Outputs: saves an assembled fits file: corrected, normalized, and in SIR format.
         """
 
@@ -72,13 +74,14 @@ def unzip(zip_name, assembled_filepath='../assembled_fits/', remove_zips=False, 
     """
     Unzip: given a filepath and a filename, unzip the file, assemble the data (via calling hinode_assemble),
             and finally, delete the folder and scans.
-
+            _____________
             Inputs: 1. assembled_filepath: filepath to send assembled to
                     2. remove_zips: whether to remove zips, default is False
                     3. directory_to_extract_to: directory to which extract slits. this needs to be removed later....
                     4. zip_name
                     5. path_to_zip
-            Outputs: saves a fits file via assemble to assembled_filepath
+            _____________
+            Outputs: saves an assembled fits file via hinode_assemble to the directory assembled_filepath
     """
 
     with zipfile.ZipFile(path_to_zip + zip_name, 'r') as zip_ref:
@@ -122,13 +125,15 @@ def unzip(zip_name, assembled_filepath='../assembled_fits/', remove_zips=False, 
 
 def get_data_path(path_to_unzipped_directories):
     """
-    Get Data Path:
-
-    - parameters:
-        1. path_to_unzipped_directories:
-    -returns:
+    Get Data Path: given a parent path, traverses the sub-directories to find all contained files.
+                   returns all files in the folder ending with SP3D, but could be configured differently.
+    _____________
+    Inputs:
+        1. path_to_unzipped_directories: parent directory path
+    _____________
+    Outputs:
         1. list of all sp3d directories
-        2. list of all data (fits) directories
+        2. list of all data (fits) files
     """
     all_sp3d_dirs = ['']  # all directories
     all_data_dirs = ['']
@@ -154,7 +159,7 @@ def get_data_path(path_to_unzipped_directories):
 def normalize(input_dataname, output_datapath, remove_original=True):
     """
 
-    NO LONGER FUNCTIONAL: INCLUDED IN HINODE_ASSEMBLE.
+    NO LONGER FUNCTIONAL: INCLUDED WITHIN HINODE_ASSEMBLE.
 
     normalize: normalizes data already in the right SIR shape
     _____________
@@ -188,6 +193,13 @@ def normalize(input_dataname, output_datapath, remove_original=True):
 def quicklook(input_filepath):
     """
     Makes a simple plot of stokes I of all the assembled fits files, to make sure they look ok/not corrupted.
+    given assembled fits files via hinode_assemble (i.e. naming convention is a.*.fits), plots Stokes I.
+    _____________
+    Inputs:
+        1. input_filepath: path to assembled fits images
+    _____________
+    Outputs:
+        1. quicklook.png: image of subplots containing Stokes I of each assembled fits.
     """
     data_list = glob.glob(input_filepath + 'a.*.fits')
     N = len(data_list)
