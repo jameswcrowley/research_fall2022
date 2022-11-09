@@ -32,7 +32,7 @@ def main():
     zip_filepath = arg.zip_filepath
     assembled_filepath = arg.assembled_filepath
 
-    u.unzip(zip_name, assembled_filepath, zip_filepath)
+    u.unzip(zip_name=zip_name, assembled_filepath=assembled_filepath, path_to_zip=zip_filepath, remove_zips=False)
     print('Assembled and normalized correctly.')
 
     u.quicklook(assembled_filepath)
