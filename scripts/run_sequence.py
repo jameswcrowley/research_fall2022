@@ -1,7 +1,11 @@
-import data_utils as u
+import data_utils as du
+import inversion_utils as iu
 import argparse
+import time
+
 
 def main():
+    start_time = time.asctime()
     parser = argparse.ArgumentParser()
     # we learned in lecture that argparse gives helpful errors.
     # so not putting a try/except block around this part intentionally
@@ -32,10 +36,20 @@ def main():
     zip_filepath = arg.zip_filepath
     assembled_filepath = arg.assembled_filepath
 
-    u.unzip(zip_name=zip_name, assembled_filepath=assembled_filepath, path_to_zip=zip_filepath, remove_zips=False)
+    # ------ Assembling: ------
+    du.unzip(zip_name=zip_name, assembled_filepath=assembled_filepath, path_to_zip=zip_filepath, remove_zips=False)
     print('Assembled and normalized correctly.')
+    du.quicklook(assembled_filepath)
+    assembled_time = time.asctime()
 
-    u.quicklook(assembled_filepath)
+
+    # # ------ Summarizing: ------
+    #
+    # with open(zip_name + '.txt', 'w') as summary_file:
+    #     summary_file.write('Start Time: ' + start_time)
+    #     summary_file.write('Assembled Time: ' + assembled_time)
+    #     summary_file.write('Inversion Start Time: ')
+    #     summary_file.write('Inversion End Time: ')
 
 if __name__ == '__main__':
     main()
