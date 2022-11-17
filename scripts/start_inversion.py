@@ -20,10 +20,7 @@ def main():
     iu.create_list(path_to_assembled_fits)
 
     # get the latest, un-inverted dataset:
-    latest_data = iu.find_latest_data(path_to_assembled_fits)
-
-    print(latest_data)
-
+    iu.find_latest_data(path_to_assembled_fits)
 
 if __name__ == '__main__':
     main()
