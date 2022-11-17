@@ -5,15 +5,9 @@ feeding them into SIR to invert these datasets.
 
 ### File Descriptions:
 
-1. scripts/SIR_inversion_utils.py:
-   1. hinode_assemble: assembles & normalizes raw HINODE scans to SIR format
-   2. unzip: I want this to unzip CSAC zips and assemble them using hinode_assemble, and finally delete the raw scans
-   3. assemble_many: given a folder containing many zips, pass each into unzip.
-   4. sir_single: edits an initialization.input file and starts an instance of a SIR inversion
-   5. sir_many: given a text file of initialization parameters, calls sir_single multiple times to invert 
-      multiple datasets. 
+1. scripts/data_utils.py: includes functions to assemble, normalze, and correct HINODE data, all from a zipped folder. -
+   - Examples of its usage: run_sequence.py and unzip.sh
+2. scripts/inversion_utils.py: scripts to help facilitate automatic inversions: moving/renaming data, iterating through all datasets, etc...
+   - Examples of its usage: start_inversion.py, end_inversion.py, and invert_1.sh.
 
-TODO:
-   - get unzip working with nested folders 
-   - get sir_single bugs worked out and add to git 
-   - 
+Find detailed descriptions of each function and script in the specific file. 

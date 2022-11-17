@@ -2,10 +2,19 @@ import argparse
 import inversion_utils as iu
 
 
-# I want this script to be run at the beginning of each inversion bash.
-# it should take only the path to assembled fits files.
-
 def main():
+    """
+    This script is run at the beginning of each inversion. It does the following:
+    1. if a data_list of all assembled fits files had not been created yet, make it.
+    2. find the last non-inverted dataset
+
+    --------------------
+    Inputs:
+    1. path to assembled fits: this is where the data_list and data is.
+    --------------------
+    Outputs:
+    1. prints the last non-inverted dataset to screen, so it can be saved as a var in bash scripts.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument('--path_to_assembled_fits',
                         dest='path_to_assembled_fits',

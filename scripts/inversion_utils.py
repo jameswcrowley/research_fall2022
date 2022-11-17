@@ -37,6 +37,14 @@ def edit_initialization(path_to_wrapper, atmos, n_cores):
 
 
 def move_output(wrapper_path, final_path, final_folder_name):
+    """
+    Moves the output of inversions to its own folder, with a specified name.
+    _____________
+    Inputs:
+        1. wrapper_path: path to SIR wrapper (where moving the data from)
+        2. final_path: where to stick the final folder/inverison results
+        3. final_folder_name: what to call the final folder.
+    """
     # make output folder:
     try:
         os.mkdir(final_path + final_folder_name)
@@ -49,6 +57,10 @@ def move_output(wrapper_path, final_path, final_folder_name):
 
 
 def edit_summary(summary_file, iteration, error, data_name):
+    """
+    Creates a file for each inverison, summarizing time it took to invert,
+    where results are saved, and whether it errored.
+    """
     current_time = str(time.asctime())
     summary = open(summary_file, 'a')
     if iteration == 0:  # if it's the first iteration
@@ -66,6 +78,15 @@ def edit_summary(summary_file, iteration, error, data_name):
 
 
 def create_list(path_to_assembled_fits):
+    """
+    Creates a list of all assembled fits files in a given directory.
+    _____________
+    Inputs:
+        1. Path to assembled fits files
+    _____________
+    Outputs:
+        1. saves a text file with all the assembled fits files, to be iterated through for inversions.
+    """
     assembled_data = [os.path.basename(x + '\n') for x in glob.glob(path_to_assembled_fits + 'a.*.fits')]
     data_list_exits = glob.glob(path_to_assembled_fits + 'data_list')
     if data_list_exits == []:
@@ -78,6 +99,16 @@ def create_list(path_to_assembled_fits):
 
 
 def find_latest_data(path_to_assembled_fits):
+    """
+    Prints the first line of data_list that has not been inverted (i.e. without an i. )
+    _____________
+    Inputs:
+        1. path_to_assembled_fits
+    _____________
+    Outputs:
+        1. prints the first instance of a non-inverted dataset to the screen,
+           so it can be saved in bash files.
+    """
     data_list = open(path_to_assembled_fits + 'data_list', 'r')
     for line in data_list:
         first_char = line[0]
@@ -89,6 +120,17 @@ def find_latest_data(path_to_assembled_fits):
 
 
 def edit_latest_data(path_to_assembled_fits, latest_data_name):
+    """
+    For a given dataset, edits the data_list to append an i. on the front of that line.
+    (for usage after that dataset has been inverted without erroring)
+    _____________
+    Inputs:
+        1. path_to_assembled_fits
+        2. latest_data_name
+    _____________
+    Outputs:
+        1. edits only the line of data_list with latest_data_name to append an i. on front.
+    """
     data_list = open(path_to_assembled_fits + 'data_list', 'w')
     for line in data_list:
         if latest_data_name in line.rstrip():  # doing in in case of weird spaces, etc...

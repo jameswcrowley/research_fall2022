@@ -16,5 +16,5 @@ source /curc/sw/anaconda3/latest
 # unpack all the data: run only once
 python run_sequence.py --zip_name "fg_download.php?cmd=download&zip=635858ae18ad9.zip&uid=1227" \
                        --zip_filepath "/scratch/alpine/jacr0382/HOP79_zips/" \
-		       --assembled_filepath "/scratch/alpine/jacr0382/HOP79/"
+		                   --assembled_filepath "/scratch/alpine/jacr0382/HOP79/"
 
