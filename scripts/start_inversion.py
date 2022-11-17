@@ -17,7 +17,7 @@ def main():
 
     path_to_assembled_fits = arg.path_to_assembled_fits
     # this will only create a list if there isn't one yet.
-    create_list = iu.create_list(path_to_assembled_fits)
+    iu.create_list(path_to_assembled_fits)
 
     # get the latest, un-inverted dataset:
     latest_data = iu.find_latest_data(path_to_assembled_fits)
