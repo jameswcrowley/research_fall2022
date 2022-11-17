@@ -43,13 +43,5 @@ def main():
     assembled_time = time.asctime()
 
 
-    # # ------ Summarizing: ------
-    #
-    # with open(zip_name + '.txt', 'w') as summary_file:
-    #     summary_file.write('Start Time: ' + start_time)
-    #     summary_file.write('Assembled Time: ' + assembled_time)
-    #     summary_file.write('Inversion Start Time: ')
-    #     summary_file.write('Inversion End Time: ')
-
 if __name__ == '__main__':
     main()
