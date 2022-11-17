@@ -48,7 +48,7 @@ def move_output(wrapper_path, final_path, final_folder_name):
     # don't need to delete output from wrapper - SIR will do it automatically
 
 
-def edit_summary(summary_file: str, iteration: int, error: bool, data_name: str):
+def edit_summary(summary_file, iteration, error, data_name):
     current_time = str(time.asctime())
     summary = open(summary_file, 'a')
     if iteration == 0:  # if it's the first iteration
