@@ -66,11 +66,11 @@ def edit_summary(summary_file, iteration, error, data_name):
 
 
 def create_list(path_to_assembled_fits):
-    assembled_data = [os.path.basename(x) for x in glob.glob(path_to_assembled_fits + 'a.*.fits')]
+    assembled_data = [os.path.basename(x + '\n') for x in glob.glob(path_to_assembled_fits + 'a.*.fits')]
     data_list_exits = glob.glob(path_to_assembled_fits + 'data_list')
     if data_list_exits == []:
         data_list = open(path_to_assembled_fits + 'data_list', 'w')
-        data_list.writelines(assembled_data + '\n')
+        data_list.writelines(assembled_data )
         data_list.close()
     else:
         pass
