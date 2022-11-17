@@ -70,7 +70,8 @@ def create_list(path_to_assembled_fits):
     data_list_exits = glob.glob(path_to_assembled_fits + 'data_list')
     if data_list_exits == []:
         data_list = open(path_to_assembled_fits + 'data_list', 'w')
-        data_list.writelines(assembled_data )
+        for i in range(len(assembled_data)):
+            data_list.write(assembled_data + '\n')
         data_list.close()
     else:
         pass
