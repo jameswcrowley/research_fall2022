@@ -56,6 +56,6 @@ python /home/jacr0382/research_fall2022/scripts/end_inversion.py --data_name $cu
                                                                  --path_to_SIR_output $path_to_atmos_wrapper\output \
                                                                  --path_to_assembled_fits $path_to_data
                                                                  --output_folder /scratch/alpine/jacr0382/HOP79_results/ \
-                                                                 --summary_file /home/jacr0382/inversion_summary_nov15.txt
+                                                                 --summary_file /home/jacr0382/HOP79_results/
 
 sbatch invert_2.sh

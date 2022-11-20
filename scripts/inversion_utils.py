@@ -10,13 +10,14 @@ import glob
 #   I want to invert with same wrappers, and move input/outputs
 #   Check that output didn't error, then move all to it's own folder in scratch/alpine.
 
-def check_output(output_text, N=30):
+def check_output(bash_output_filapath, N=30):
     """
     Given an output SIR inversion text file, check whether it has error-ed.
     If it has, return -1, if not, return 0.
     """
+    latest_bash_out = max(glob.glob(bash_output_filapath + '*.out'))
     head = ''
-    with open(output_text) as file:
+    with open(latest_bash_out) as file:
         n = 0
         while n <= N:
             for line in file:
