@@ -43,7 +43,7 @@ def hinode_assemble(output_name, input_filepath='.', output_filepath='.', correc
         stokes_temp = stokes_temp.reshape(1, 4, SLITSIZE, 112)
         stokes = np.concatenate((stokes, stokes_temp), axis=0)
 
-    #stokes = stokes.transpose(2, 0, 1, 3)
+    stokes = stokes.transpose(0, 3, 0, 1)
     stokes = stokes[:, :60, :, :]
     # correct:
     if correct:
