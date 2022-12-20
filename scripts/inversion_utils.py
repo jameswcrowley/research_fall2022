@@ -61,6 +61,12 @@ def edit_summary(summary_file, iteration, error, data_name):
     """
     Creates a file for each inverison, summarizing time it took to invert,
     where results are saved, and whether it errored.
+    _____________
+    Inputs:
+        1. summary_file (str): name of file to be written
+        2. iteration (int): x of SIR
+        3. error (bool): if errored
+        4. data_name (str):
     """
     current_time = str(time.asctime())
     summary = open(summary_file, 'a')
@@ -75,6 +81,8 @@ def edit_summary(summary_file, iteration, error, data_name):
     else:
         lines = ('------------', 'Iteration ' + str(iteration) + 'completed at: ' + current_time)
         summary.writelines(lines)
+        if not error:
+            summary.write('Iteration errored.')
     summary.close()
 
 
