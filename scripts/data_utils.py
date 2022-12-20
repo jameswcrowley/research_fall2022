@@ -30,10 +30,10 @@ def hinode_assemble(output_name, input_filepath='.', output_filepath='.', correc
     for file in sorted(os.listdir(input_filepath)):
         if file.endswith(input_format):
             filenames.append(file)
-    print(str(len(filenames)) + ' fits slits to assemble.')
+    print(str(len(filenames)) + ' slits to assemble.')
 
     stokes = fits.open(input_filepath + filenames[0])[0].data
-    SLITSIZE = stokes.shape[1]  # if the data is in a different format, this is the one to check first.
+    SLITSIZE = stokes.shape[1]
     print('Slitlength = ', SLITSIZE)
     stokes = stokes.reshape(1, 4, SLITSIZE, 112)
 
@@ -49,19 +49,19 @@ def hinode_assemble(output_name, input_filepath='.', output_filepath='.', correc
     if correct:
         correct_mod = 'c.'
         stokes_new = np.zeros(stokes.shape)
-        for i in range(stokes.shape[0]):
-            for j in range(stokes.shape[1]):
-                for l in range(stokes.shape[3]):
+        for i in range(stokes.shape[2]):
+            for j in range(stokes.shape[3]):
+                for l in range(stokes.shape[1]):
                     # stokes I should never be negative, if it is, we need to correct spillover counts:
-                    if stokes[i, j, 0, l] < 0:
-                        stokes_new[i, j, 0, l] = stokes[i, j, 0, l] + 65536
+                    if stokes[0, l, i, j] < 0:
+                        stokes_new[0, l, i, j] = stokes[0, l, i, j] + 65536
                     else:
-                        stokes_new[i, j, 0, l] = stokes[i, j, 0, l]
+                        stokes_new[0, l, i, j] = stokes[0, l, i, j]
         stokes = stokes_new
     # normalize:
     if normalize:
         normalize_mod = 'n.'
-        continuum = np.mean(stokes[:, :, 0, :10])
+        continuum = np.mean(stokes[0, :10, :, :])
         stokes = np.true_divide(stokes, continuum)
 
     hdu = fits.PrimaryHDU(stokes)
@@ -84,7 +84,7 @@ def unzip(zip_name, assembled_filepath='../assembled_fits/', remove_zips=False, 
             _____________
             Outputs: saves an assembled fits file via hinode_assemble to the directory assembled_filepath
     """
-
+    print(path_to_zip + zip_name)
     with zipfile.ZipFile(path_to_zip + zip_name, 'r') as zip_ref:
         temp_slit_folder_name = 'temp'
         # create a temporary folder to put fits slits into:
@@ -109,11 +109,11 @@ def unzip(zip_name, assembled_filepath='../assembled_fits/', remove_zips=False, 
         hinode_assemble(output_name=name + '.fits',
                         input_filepath=data_dir + '/',
                         output_filepath=assembled_filepath)
-    # remove the slits:
-    try:
-        shutil.rmtree(path_to_zip + temp_slit_folder_name)
-    except OSError as e:
-        print("Error: %s - %s." % (e.filename, e.strerror))
+    #remove the slits:
+    # try:
+    #     shutil.rmtree(path_to_zip + temp_slit_folder_name)
+    # except OSError as e:
+    #     print("Error: %s - %s." % (e.filename, e.strerror))
 
     # remove the zips if remove_zips is true :
     if remove_zips:
