@@ -53,7 +53,7 @@ python /projects/jacr0382/wrapper_2/parallel_master_v0.51.py
 # End Scripts:
 # ------------
 python /home/jacr0382/research_fall2022/scripts/end_inversion.py --data_name "$current_data" \
-                                                                 --path_to_SIR_output $path_to_atmos_wrapper\output \
+                                                                 --path_to_SIR_output $path_to_atmos_wrapper/output \
                                                                  --path_to_assembled_fits $path_to_data \
                                                                  --output_folder /scratch/alpine/jacr0382/HOP79_results/ \
                                                                  --summary_file /home/jacr0382/HOP79_results/
