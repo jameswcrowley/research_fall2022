@@ -26,7 +26,7 @@ current_data=$(python /home/jacr0382/research_fall2022/scripts/start_inversion.p
 # ------------
 
 # 1. renaming selected dataset as temporary dataset:
-mv /scratch/alpine/jacr0382/HOP79/$current_data /scratch/alpine/jacr0382/temp/data.fits
+mv /scratch/alpine/jacr0382/HOP79/"$current_data" /scratch/alpine/jacr0382/temp/data.fits
 
 # 2. running first inversion:
 python /projects/jacr0382/wrapper_1/parallel_master_v0.51.py
@@ -52,7 +52,7 @@ python /projects/jacr0382/wrapper_2/parallel_master_v0.51.py
 
 # End Scripts:
 # ------------
-python /home/jacr0382/research_fall2022/scripts/end_inversion.py --data_name $current_data \
+python /home/jacr0382/research_fall2022/scripts/end_inversion.py --data_name "$current_data" \
                                                                  --path_to_SIR_output $path_to_atmos_wrapper\output \
                                                                  --path_to_assembled_fits $path_to_data \
                                                                  --output_folder /scratch/alpine/jacr0382/HOP79_results/ \
