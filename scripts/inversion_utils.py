@@ -96,7 +96,7 @@ def create_list(path_to_assembled_fits):
     Outputs:
         1. saves a text file with all the assembled fits files, to be iterated through for inversions.
     """
-    assembled_data = [os.path.basename(x + '\n') for x in glob.glob(path_to_assembled_fits + 'a.*.fits')]
+    assembled_data = [os.path.basename(x + '\n') for x in glob.glob(path_to_assembled_fits + '*.fits')]
     data_list_exits = glob.glob(path_to_assembled_fits + 'data_list')
     if data_list_exits == []:
         data_list = open(path_to_assembled_fits + 'data_list', 'w')
