@@ -16,7 +16,6 @@ def check_output(bash_output_filapath, N=30):
     If it has, return -1, if not, return 0.
     """
     latest_bash_out = max(glob.glob(bash_output_filapath + '*.out'))
-    head = ''
     with open(latest_bash_out) as file:
         n = 0
         while n <= N:

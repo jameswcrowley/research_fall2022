@@ -34,11 +34,11 @@ def main():
                         type=str,
                         required=True,
                         help='output folder for inversion results')
-    parser.add_argument('--output_summary_folder',
-                        dest='output_summary_folder',
-                        type=str,
-                        required=True,
-                        help='SIR/bash output summary filepath.')
+    # parser.add_argument('--output_summary_folder',
+    #                     dest='output_summary_folder',
+    #                     type=str,
+    #                     required=True,
+    #                     help='SIR/bash output summary filepath.')
 
     arg = parser.parse_args()
 
@@ -46,17 +46,17 @@ def main():
     path_to_assembled_fits = arg.path_to_assembled_fits
     path_to_SIR_output = arg.path_to_SIR_output
     output_folder = arg.output_folder
-    output_summary_folder = arg.output_summary_folder
+    # output_summary_folder = arg.output_summary_folder
 
     # idea with this script: I want this to run after 2x inversions. it should move output,
 
     iu.move_output(path_to_SIR_output,
                    output_folder,
                    data_name)
-    errored = iu.check_output(output_summary_folder)
-    if errored == 0:  # it hasn't errored
-        iu.edit_latest_data(path_to_assembled_fits,
-                            data_name)
+    # errored = iu.check_output(output_summary_folder)
+    # if errored == 0:  # it hasn't errored
+    #     iu.edit_latest_data(path_to_assembled_fits,
+    #                         data_name)
 
     # TODO: add this back in later
     # iu.edit_summary(summary_folder=summary_folder,
