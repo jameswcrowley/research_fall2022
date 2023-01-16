@@ -47,7 +47,7 @@ def move_output(wrapper_path, final_path, final_folder_name):
     """
     # make output folder:
     try:
-        os.mkdir(final_path + final_folder_name)
+        os.mkdir(final_path + final_folder_name[:-5])
     except:
         print('Final output Folder Already Exits.')
 
