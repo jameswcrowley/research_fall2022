@@ -52,7 +52,7 @@ def move_output(wrapper_path, final_path, final_folder_name):
         print('Final output Folder Already Exits.')
 
     # move output to that new folder:
-    os.rename(wrapper_path + 'results/*', final_path + final_folder_name)
+    os.rename(wrapper_path + 'results/*', final_path + final_folder_name[:-5])
     # don't need to delete output from wrapper - SIR will do it automatically
 
 
